@@ -1,6 +1,8 @@
 package labb5;
 
 import javax.swing.*;
+import javax.swing.event.HyperlinkEvent;
+import javax.swing.event.HyperlinkListener;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -14,10 +16,7 @@ import java.awt.event.ActionListener;
 
 
 public class Controller extends JPanel implements ActionListener {
-    JTextField textField;
-    JButton goButton;
-    JButton backButton;
-    JButton fwdButton;
+
     Model model;
     View view;
 
@@ -34,27 +33,12 @@ public class Controller extends JPanel implements ActionListener {
         model = inModel;
         view = inView;
 
-        textField = new JTextField();
-        textField.setText(model.strUrl);
-        //textField.setSize(50, 5);
+        view.goButton.addActionListener(this);
+        view.backButton.addActionListener(this);
+        view.fwdButton.addActionListener(this);
 
-        goButton = new JButton();
-        goButton.addActionListener(this);
-        goButton.setText("Go");
-
-        backButton = new JButton();
-        backButton.addActionListener(this);
-        backButton.setText("Back");
-
-        fwdButton = new JButton();
-        fwdButton.addActionListener(this);
-        fwdButton.setText("Fwd");
-
-        this.setLayout(new FlowLayout());
-        this.add(textField);
-        this.add(goButton);
-        this.add(backButton);
-        this.add(fwdButton);
+        HyperlinkListener hyperlinkListener = new ActivatedHyperLinkListener(view.editorPane);
+        view.editorPane.addHyperlinkListener(hyperlinkListener);
 
     }
 
@@ -68,13 +52,13 @@ public class Controller extends JPanel implements ActionListener {
     @Override
     public void actionPerformed(ActionEvent e) {
         Object src = e.getSource();
-        if(src.equals(goButton)){
+        if(src.equals(view.goButton)){
             goButtonAction();
         }
-        else if(src.equals(backButton)){
+        else if(src.equals(view.backButton)){
             backButtonAction();
         }
-        else if(src.equals(fwdButton)){
+        else if(src.equals(view.fwdButton)){
             fwdButtonAction();
         }
     }
@@ -84,7 +68,7 @@ public class Controller extends JPanel implements ActionListener {
      */
 
     private void goButtonAction(){
-        model.setStrUrl(textField.getText());
+        model.setStrUrl(view.textField.getText());
         System.out.println(model.strUrl);
         model.updateModel();
         view.updateView();
@@ -95,5 +79,26 @@ public class Controller extends JPanel implements ActionListener {
     }
     private void fwdButtonAction(){
 
+    }
+
+    /**
+     * HyperLinkListener which listens to clicked links in Views JEditorPane.
+     * Updates model and view when a link is clicked.
+     */
+    private class ActivatedHyperLinkListener implements HyperlinkListener {
+
+        JEditorPane listenerPane;
+
+        private ActivatedHyperLinkListener(JEditorPane editorPanein) {
+            listenerPane = editorPanein;
+        }
+
+        public void hyperlinkUpdate(HyperlinkEvent hyperlinkEvent) {
+            if (hyperlinkEvent.getEventType() == HyperlinkEvent.EventType.ACTIVATED) {
+                model.strUrl = hyperlinkEvent.getURL().toString();
+                model.updateModel();
+                view.updateView();
+            }
+        }
     }
 }

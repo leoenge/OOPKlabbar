@@ -24,7 +24,6 @@ public class WebFrame extends JFrame{
 
     public WebFrame(){
         mainPanel = new JPanel();
-        mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
         model = new Model();
         try{
             view = new View(model);
@@ -32,7 +31,6 @@ public class WebFrame extends JFrame{
             System.exit(-2);
         }
         controller = new Controller(model, view);
-        mainPanel.add(controller);
         mainPanel.add(view);
         this.add(mainPanel);
         this.pack();

@@ -1,7 +1,6 @@
 package labb5;
 
 import javax.swing.*;
-import javax.swing.event.HyperlinkEvent;
 import javax.swing.event.HyperlinkListener;
 import java.awt.*;
 import java.io.IOException;
@@ -16,8 +15,15 @@ import java.io.IOException;
 public class View extends JPanel {
 
     Model model;
+
     JEditorPane editorPane;
     JScrollPane scrollPane;
+    JPanel controlPanel;
+
+    JTextField textField;
+    JButton goButton;
+    JButton backButton;
+    JButton fwdButton;
 
     /**
      * Constructor for View object. Adds an editorPane in a scrollPane to View. Also sets the current webpage displayed
@@ -28,21 +34,42 @@ public class View extends JPanel {
      */
 
     public View(Model inModel) throws IOException{
+        this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
         model = inModel;
+
+        controlPanel = new JPanel();
+        controlPanel.setLayout(new FlowLayout());
+
+        textField = new JTextField();
+        textField.setText(model.strUrl);
+        //textField.setSize(50, 5);
+
+        goButton = new JButton();
+        goButton.setText("Go");
+
+        backButton = new JButton();
+        backButton.setText("Back");
+
+        fwdButton = new JButton();
+        fwdButton.setText("Fwd");
+
+        controlPanel.add(textField);
+        controlPanel.add(goButton);
+        controlPanel.add(backButton);
+        controlPanel.add(fwdButton);
+
         editorPane = new JEditorPane();
         editorPane.setEditable(false);
-        //editorPane.setContentType("text/html");
-        HyperlinkListener hyperlinkListener = new ActivatedHyperLinkListener(editorPane);
-        editorPane.addHyperlinkListener(hyperlinkListener);
 
         try{
             editorPane.setPage(model.url);
-            editorPane.setText(model.HTML);
         }catch (IOException e){
             System.exit(-3);
         }
         editorPane.setPreferredSize(new Dimension(500, 500));
         scrollPane = new JScrollPane(editorPane);
+
+        this.add(controlPanel);
         this.add(scrollPane);
         setVisible(true);
     }
@@ -53,32 +80,11 @@ public class View extends JPanel {
     public void updateView(){
         try{
             editorPane.setPage(model.url);
-            //editorPane.setText(model.HTML);
         } catch (IOException e){
             System.out.println("Konstig URL");;
         }
 
     }
 
-    /**
-     * HyperLinkListener which listens to clicked links in Views JEditorPane.
-     * Updates model and view when a link is clicked.
-     */
 
-    private class ActivatedHyperLinkListener implements HyperlinkListener {
-
-        JEditorPane listenerPane;
-
-        private ActivatedHyperLinkListener(JEditorPane editorPanein) {
-            listenerPane = editorPanein;
-        }
-
-        public void hyperlinkUpdate(HyperlinkEvent hyperlinkEvent) {
-            if (hyperlinkEvent.getEventType() == HyperlinkEvent.EventType.ACTIVATED) {
-                model.strUrl = hyperlinkEvent.getURL().toString();
-                model.updateModel();
-                updateView();
-            }
-        }
-    }
 }
