@@ -1,4 +1,4 @@
-package Labb6;
+package labb6;
 
 public abstract class Component {
 }
