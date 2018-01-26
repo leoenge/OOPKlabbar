@@ -2,9 +2,7 @@ package labb4;
 
 import java.awt.*;
 import java.lang.Math;
-import java.lang.reflect.Array;
 import java.util.HashSet;
-import java.util.List;
 import java.util.ArrayList;
 
 public class Model {
@@ -53,7 +51,7 @@ public class Model {
                 < Math.pow(particle1.diameter / (double) 700, 2);
     }
 
-    private static boolean resolveStuckOnWall(Particle particle) {
+    private boolean resolveStuckOnWall(Particle particle) {
 
         boolean stuck = false;
         //Particle positions are given from 0 to 1 and then scaled to the
@@ -73,6 +71,20 @@ public class Model {
             particle.x = Math.min(particle.x, 1);
             particle.y = Math.min(particle.y, 1);
 
+            particle.stuck = true;
+            particle.color = Color.red;
+
+            stuck = true;
+        }
+
+        //Add a circular "wall" which the particles can collide with in the middle
+        double circleRadius = 0.2;
+
+        //If the particle touches the circle it becomes stuck.
+        if (Math.pow(particle.x - 0.5, 2) + Math.pow(particle.y - 0.5, 2)
+                < Math.pow(circleRadius + particle.diameter / ((double) 2 * windowWidth), 2)
+                && Math.pow(particle.x - 0.5, 2) + Math.pow(particle.y - 0.5, 2)
+                > Math.pow(circleRadius - particle.diameter / ((double) 2 * windowWidth), 2)) {
             particle.stuck = true;
             particle.color = Color.red;
 

@@ -14,7 +14,7 @@ public class MyFrame extends JFrame {
 
     public MyFrame() {
         mainPanel.setLayout(new FlowLayout());
-        Model myModel = new Model(20000);
+        Model myModel = new Model(10);
         View myView = new View(myModel);
 
         mainController = new Controller(myModel, myView);
