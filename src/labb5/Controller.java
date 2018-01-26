@@ -69,16 +69,19 @@ public class Controller extends JPanel implements ActionListener {
 
     private void goButtonAction(){
         model.setStrUrl(view.textField.getText());
-        System.out.println(model.strUrl);
         model.updateModel();
         view.updateView();
 
     }
     private void backButtonAction(){
-
+        model.moveInHistory(-1);
+        model.updateModel();
+        view.updateView();
     }
     private void fwdButtonAction(){
-
+        model.moveInHistory(1);
+        model.updateModel();
+        view.updateView();
     }
 
     /**
@@ -95,7 +98,7 @@ public class Controller extends JPanel implements ActionListener {
 
         public void hyperlinkUpdate(HyperlinkEvent hyperlinkEvent) {
             if (hyperlinkEvent.getEventType() == HyperlinkEvent.EventType.ACTIVATED) {
-                model.strUrl = hyperlinkEvent.getURL().toString();
+                model.setStrUrl(hyperlinkEvent.getURL().toString());
                 model.updateModel();
                 view.updateView();
             }

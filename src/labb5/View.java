@@ -41,7 +41,6 @@ public class View extends JPanel {
         controlPanel.setLayout(new FlowLayout());
 
         textField = new JTextField();
-        textField.setText(model.strUrl);
         //textField.setSize(50, 5);
 
         goButton = new JButton();
@@ -61,11 +60,8 @@ public class View extends JPanel {
         editorPane = new JEditorPane();
         editorPane.setEditable(false);
 
-        try{
-            editorPane.setPage(model.url);
-        }catch (IOException e){
-            System.exit(-3);
-        }
+        updateView();
+
         editorPane.setPreferredSize(new Dimension(500, 500));
         scrollPane = new JScrollPane(editorPane);
 
@@ -83,7 +79,12 @@ public class View extends JPanel {
         } catch (IOException e){
             System.out.println("Konstig URL");;
         }
+        textField.setText(model.strUrl);
 
+        if(model.canMoveBackHistory()){backButton.setEnabled(true);}
+        else{backButton.setEnabled(false);}
+        if(model.canMoveFwdHistory()){fwdButton.setEnabled(true);}
+        else{fwdButton.setEnabled(false);}
     }
 
 
