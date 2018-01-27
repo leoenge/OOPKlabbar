@@ -24,6 +24,7 @@ public class View extends JPanel {
     JButton goButton;
     JButton backButton;
     JButton fwdButton;
+    JButton historyButton;
 
     /**
      * Constructor for View object. Adds an editorPane in a scrollPane to View. Also sets the current webpage displayed
@@ -52,10 +53,14 @@ public class View extends JPanel {
         fwdButton = new JButton();
         fwdButton.setText("Fwd");
 
+        historyButton = new JButton();
+        historyButton.setText("History");
+
         controlPanel.add(textField);
         controlPanel.add(goButton);
         controlPanel.add(backButton);
         controlPanel.add(fwdButton);
+        controlPanel.add(historyButton);
 
         editorPane = new JEditorPane();
         editorPane.setEditable(false);

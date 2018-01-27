@@ -3,9 +3,12 @@ package labb5;
 import javax.swing.*;
 import javax.swing.event.HyperlinkEvent;
 import javax.swing.event.HyperlinkListener;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
 
 /**
  * Controller for displaying webpages. Contains a textfield for entering URL:s, a go button to update to the
@@ -36,6 +39,7 @@ public class Controller extends JPanel implements ActionListener {
         view.goButton.addActionListener(this);
         view.backButton.addActionListener(this);
         view.fwdButton.addActionListener(this);
+        view.historyButton.addActionListener(this);
 
         HyperlinkListener hyperlinkListener = new ActivatedHyperLinkListener(view.editorPane);
         view.editorPane.addHyperlinkListener(hyperlinkListener);
@@ -61,6 +65,9 @@ public class Controller extends JPanel implements ActionListener {
         else if(src.equals(view.fwdButton)){
             fwdButtonAction();
         }
+        else if(src.equals(view.historyButton)){
+            historyButtonAction();
+        }
     }
 
     /**
@@ -71,17 +78,70 @@ public class Controller extends JPanel implements ActionListener {
         model.setStrUrl(view.textField.getText());
         model.updateModel();
         view.updateView();
-
     }
+
+    /**
+     * Runs when the back button is pressed. Will go back one step in the history and make that page display.
+     */
     private void backButtonAction(){
         model.moveInHistory(-1);
         model.updateModel();
         view.updateView();
     }
+
+    /**
+     * Runs when the forward button is pressed. Will go forward one step in the history and make that page display.
+     */
     private void fwdButtonAction(){
         model.moveInHistory(1);
         model.updateModel();
         view.updateView();
+    }
+
+
+    /**
+     * Runs when the history button is pressed. Will open a new window with the history in a clickable list.
+     * When an element is clicked the window is closed and the method returns.
+     */
+    private void historyButtonAction(){
+        System.out.println("Yo");
+        JFrame historyFrame = new JFrame();
+        JPanel historyPanel = new JPanel();
+        JList historyList = new JList();
+
+        historyList.setModel(new AbstractListModel() {
+
+            ArrayList<String> strings = model.completeHistory;
+
+            @Override
+            public int getSize() {
+                return strings.size();
+            }
+
+            @Override
+            public Object getElementAt(int index) {
+                return strings.get(index);
+            }
+        });
+
+        historyList.addListSelectionListener(new ListSelectionListener() {
+            @Override
+            public void valueChanged(ListSelectionEvent e) {
+                String url = (String)historyList.getSelectedValue();
+                int index = historyList.getSelectedIndex();
+                model.setStrUrl(url);
+                model.completeHistory.remove(index);
+                model.updateModel();
+                view.updateView();
+                historyFrame.dispose();
+            }
+        });
+
+        historyPanel.add(historyList);
+        historyPanel.setVisible(true);
+        historyFrame.add(historyPanel);
+        historyFrame.pack();
+        historyFrame.setVisible(true);
     }
 
     /**
