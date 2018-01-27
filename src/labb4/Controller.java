@@ -30,6 +30,9 @@ public class Controller extends JPanel implements ChangeListener, ActionListener
     private static final int deltaSliderMin = 1;
     private static final int deltaSliderInit = 50;
 
+    private static boolean logData;
+    private JToggleButton startStopButton;
+
     public Controller(Model modelIn, View viewIn) {
         model = modelIn;
         view = viewIn;
@@ -43,15 +46,34 @@ public class Controller extends JPanel implements ChangeListener, ActionListener
         timer =  new Timer(deltaInt, this);
         timer.start();
 
-        LSlider = new JSlider(JSlider.VERTICAL, LsliderMin,
-                LsliderMax, LsliderInit);
+        LSlider = new JSlider(JSlider.VERTICAL, LsliderMin, LsliderMax, LsliderInit);
         LSlider.addChangeListener(this);
-        deltaSlider = new JSlider(JSlider.VERTICAL, deltaSliderMin,
-                deltaSliderMax, deltaSliderInit);
+
+        deltaSlider = new JSlider(JSlider.VERTICAL, deltaSliderMin, deltaSliderMax, deltaSliderInit);
         deltaSlider.addChangeListener(this);
+
+        logData = false;
+        startStopButton = new JToggleButton("Not logging", false);
+        startStopButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                logData = !logData;
+                JToggleButton b = (JToggleButton) e.getSource();
+
+                if (b.isSelected()) {
+                    b.setText("Logging");
+                }
+
+                else {
+                    b.setText("Not Logging");
+                }
+            }
+        });
+
 
         this.add(LSlider);
         this.add(deltaSlider);
+        this.add(startStopButton);
         this.setVisible(true);
 
     }
@@ -83,9 +105,9 @@ public class Controller extends JPanel implements ChangeListener, ActionListener
     public void actionPerformed(ActionEvent e) {
         model.updateAllPositions();
         view.repaint();
-        if (noOfSteps < 200) {
+        time += delta;
+        if (noOfSteps < 100 && logData) {
             noOfSteps++;
-            time += delta;
             stringBuilder.append(time);
             stringBuilder.append(" , ");
             for (double d : model.getAllPositions()) {
