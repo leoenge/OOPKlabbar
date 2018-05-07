@@ -78,13 +78,20 @@ public class View extends JPanel {
     /**
      * Updates View to the URL in model
      */
-    public void updateView(){
+    public void updateView() {
+        textField.setText(model.strUrl);
+        if(model.url == null){
+            JOptionPane.showMessageDialog(this, "Det där gick inge bra. Antingen är URL:en lite konstig" +
+                    "eller så är din internetuppkoppling inte hundra hundra.");
+            return;
+        }
         try{
             editorPane.setPage(model.url);
-        } catch (IOException e){
-            System.out.println("Konstig URL");;
+        }catch (IOException e){
+            JOptionPane.showMessageDialog(this, "Det där gick inge bra. Antingen är URL:en lite konstig" +
+                    "eller så är din internetuppkoppling inte hundra hundra.");
+            return;
         }
-        textField.setText(model.strUrl);
 
         if(model.canMoveBackHistory()){backButton.setEnabled(true);}
         else{backButton.setEnabled(false);}

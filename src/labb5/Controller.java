@@ -8,6 +8,8 @@ import javax.swing.event.ListSelectionListener;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.IOException;
+import java.net.MalformedURLException;
 import java.util.ArrayList;
 
 /**
@@ -76,7 +78,9 @@ public class Controller extends JPanel implements ActionListener {
 
     private void goButtonAction(){
         model.setStrUrl(view.textField.getText());
-        model.updateModel();
+        try{
+            model.updateModel();
+        } catch (MalformedURLException e){}
         view.updateView();
     }
 
@@ -85,7 +89,9 @@ public class Controller extends JPanel implements ActionListener {
      */
     private void backButtonAction(){
         model.moveInHistory(-1);
-        model.updateModel();
+        try{
+            model.updateModel();
+        } catch (MalformedURLException e){}
         view.updateView();
     }
 
@@ -94,7 +100,9 @@ public class Controller extends JPanel implements ActionListener {
      */
     private void fwdButtonAction(){
         model.moveInHistory(1);
-        model.updateModel();
+        try{
+            model.updateModel();
+        } catch (MalformedURLException e){}
         view.updateView();
     }
 
@@ -104,7 +112,6 @@ public class Controller extends JPanel implements ActionListener {
      * When an element is clicked the window is closed and the method returns.
      */
     private void historyButtonAction(){
-        System.out.println("Yo");
         JFrame historyFrame = new JFrame();
         JPanel historyPanel = new JPanel();
         JList historyList = new JList();
@@ -131,7 +138,9 @@ public class Controller extends JPanel implements ActionListener {
                 int index = historyList.getSelectedIndex();
                 model.setStrUrl(url);
                 model.completeHistory.remove(index);
-                model.updateModel();
+                try{
+                    model.updateModel();
+                } catch (MalformedURLException ex) {}
                 view.updateView();
                 historyFrame.dispose();
             }
@@ -152,14 +161,18 @@ public class Controller extends JPanel implements ActionListener {
 
         JEditorPane listenerPane;
 
-        private ActivatedHyperLinkListener(JEditorPane editorPanein) {
-            listenerPane = editorPanein;
+        private ActivatedHyperLinkListener(JEditorPane editorPaneIn) {
+            listenerPane = editorPaneIn;
         }
 
         public void hyperlinkUpdate(HyperlinkEvent hyperlinkEvent) {
             if (hyperlinkEvent.getEventType() == HyperlinkEvent.EventType.ACTIVATED) {
                 model.setStrUrl(hyperlinkEvent.getURL().toString());
-                model.updateModel();
+                try{
+                    model.updateModel();
+                } catch (MalformedURLException ex){
+                    return;
+                }
                 view.updateView();
             }
         }

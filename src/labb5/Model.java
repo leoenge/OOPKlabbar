@@ -1,5 +1,6 @@
 package labb5;
 
+import javax.swing.*;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -42,8 +43,11 @@ public class Model {
      * @param newUrl url given as a string. Does not update the model.
      */
 
-    public void setStrUrl(String newUrl){
+    public void setStrUrl(String newUrl) {
         strUrl = newUrl;
+    }
+
+    private void updateHistory(){
         completeHistory.add(strUrl);
 
         while(historyPointer < dynamicHistory.size() - 1){
@@ -91,13 +95,15 @@ public class Model {
     /**
      * updates the models url field to the current strUrl.
      */
-
-    public void updateModel(){
+    public void updateModel() throws MalformedURLException {
         try{
             url = new URL(strUrl);
         }catch (MalformedURLException e) {
+            System.out.println("Dålig url");
             url = null;
+            throw e;
         }
+        updateHistory();
         System.out.println("==========");
         System.out.println("Complete history:" + completeHistory.toString());
         System.out.println("Dynamic history" + dynamicHistory.toString());
